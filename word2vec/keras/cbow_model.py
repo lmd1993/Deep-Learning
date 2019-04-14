@@ -70,7 +70,8 @@ model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, rev
 # Save the trained embedding
 S.save_embeddings("embedding.txt", shared_embedding_layer.get_weights()[0], vocabulary)
 S.save_embeddings("embedding2.txt", shared_embedding_layer2.get_weights()[0], vocabulary)
-
+S.save_embeddings_binary("embeddingb", shared_embedding_layer.get_weights()[0], vocabulary)
+S.save_embeddings_binary("embeddingb2", shared_embedding_layer2.get_weights()[0], vocabulary)
 # S.save_embeddings("embedding.txt", shared_embedding_layer.get_weights()[1], vocabulary)
 
 # input_context = np.random.randint(10, size=(1, context_size))
