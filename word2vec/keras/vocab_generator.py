@@ -20,7 +20,7 @@ import global_settings as G
 # vocabulary will be a dictionary of words and their corresponding counts
 def build_vocabulary(vocabulary, sentences):
 	# global G.train_words
-	print "Generating Vocabulary from the sentences"
+	print ("Generating Vocabulary from the sentences")
 	# Count the total number of training words
 	G.train_words = 0
 	for sentence in sentences:
@@ -28,14 +28,14 @@ def build_vocabulary(vocabulary, sentences):
 			vocabulary.setdefault(word, 0)
 			vocabulary[word] += 1
 			G.train_words += 1;
-	print "Vocabulary size = %d" % len(vocabulary)
-	print "Total words to be trained = %d" % G.train_words
+	print ("Vocabulary size = %d" % len(vocabulary))
+	print ("Total words to be trained = %d" % G.train_words)
 
 def filter_vocabulary_based_on(vocabulary, min_count):
 	# global G.vocab_size
-	print "Deleting the words which occur less than %d times" % min_count
+	print ("Deleting the words which occur less than %d times" % min_count)
 	# find the words to be deleted
-	delete_word_list = [word for word, count in vocabulary.iteritems() if count < min_count]
+	delete_word_list = [word for word, count in vocabulary.items() if count < min_count]
 	# All the words which will be deleted from the corpus will become unknown words
 	# Therefore counting the number of unkown words in the corpus
 	unk_count = 0
@@ -44,7 +44,7 @@ def filter_vocabulary_based_on(vocabulary, min_count):
 		unk_count += vocabulary.pop(word, 0)
 	vocabulary[G.UNKNOWN_WORD] = unk_count
 	G.vocab_size = len(vocabulary)
-	print "Vocabulary size after filtering words = %d" % G.vocab_size
+	print ("Vocabulary size after filtering words = %d" % G.vocab_size)
 
 def generate_inverse_vocabulary_lookup(vocabulary, save_filepath):
 	# It is assumed the the vocabulary here has the UNKNOWN_WORD

@@ -1,14 +1,13 @@
 from __future__ import absolute_import
 
-from keras import backend as K
+from tensorflow.python.keras import backend as K
 import numpy as np
-from keras.utils.np_utils import accuracy
-from keras.models import Sequential, Model
-from keras.layers import Input, Lambda, Dense, merge
-from keras.layers.embeddings import Embedding
-from keras.optimizers import SGD
-from keras.objectives import mse
-
+#from tensorflow.python.keras.utils.np_utils import accuracy
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Input, Lambda, Dense, merge
+from tensorflow.python.keras.layers.embeddings import Embedding
+from tensorflow.python.keras.optimizers import SGD
+#from tensorflow.python.keras.objectives import mse
 import global_settings as G
 from sentences_generator import Sentences
 import vocab_generator as V_gen
@@ -41,13 +40,15 @@ negative_words_embedding = shared_embedding_layer(negative_samples)
 # Now the context words are averaged to get the CBOW vector
 cbow = Lambda(lambda x: K.mean(x, axis=1), output_shape=(G.embedding_dimension,))(context_embeddings)
 # The context is multiplied (dot product) with current word and negative sampled words
+print(type(word_embedding))
+print(type(cbow))
 word_context_product = merge([word_embedding, cbow], mode='dot')
 negative_context_product = merge([negative_words_embedding, cbow], mode='dot', concat_axis=-1)
 # The dot products are outputted
 model = Model(input=[word_index, context, negative_samples], output=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output
 model.compile(optimizer='rmsprop', loss='binary_crossentropy')
-print model.summary()
+print (model.summary())
 
 # model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary), samples_per_epoch=G.train_words, nb_epoch=1)
 model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary), samples_per_epoch=10, nb_epoch=1)
