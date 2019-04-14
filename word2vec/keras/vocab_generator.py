@@ -15,7 +15,7 @@ import numpy as np
 
 # local imports
 # Global settings for the project
-import global_settings as G
+from word2vec.keras import global_settings as G
 
 # vocabulary will be a dictionary of words and their corresponding counts
 def build_vocabulary(vocabulary, sentences):
@@ -88,11 +88,16 @@ def subsample_sentence(sentence, vocabulary):
 
 def get_negative_samples(current_word_index):
 	# Generate random negative samples
-	negative_samples = random.sample(xrange(G.vocab_size), G.negative)
+	negative_samples = random.sample(range(G.vocab_size), G.negative)
 	while current_word_index in negative_samples:
-		negative_samples = random.sample(xrange(G.vocab_size), G.negative)
+		negative_samples = random.sample(range(G.vocab_size), G.negative)
 	return np.array([negative_samples])
-
+def getStepsPerEpoch(sentences, batchSize = 1):
+	count = 0
+	for sentence in sentences:
+		sentence = sentence.split()
+		count += len(sentence)
+	return int(count/batchSize)
 def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 	# Restart running from the first sentence if the the file reading is done
 	while True:
@@ -115,10 +120,10 @@ def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 
 			# Create current batch
 			sentence_length = len(sent_seq)
-			for i in xrange(sentence_length):
+			for i in range(sentence_length):
 				current_word_index = None
 				context_word_indexes = list()
-				for j in xrange(-G.window_size, G.window_size + 1):
+				for j in range(-G.window_size, G.window_size + 1):
 					# j will be of indices -G.window_size to G.window_size
 					if j == 0:
 						# current word
