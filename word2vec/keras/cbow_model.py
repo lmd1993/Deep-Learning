@@ -10,21 +10,21 @@ from tensorflow.python.keras.layers import Input, Lambda, Dense
 from tensorflow.python.keras.layers.embeddings import Embedding
 from tensorflow.python.keras.optimizers import SGD
 #from tensorflow.python.keras.objectives import mse
-from word2vec.keras import global_settings as G
-from word2vec.keras.sentences_generator import Sentences
-from word2vec.keras import vocab_generator as V_gen
-from word2vec.keras import save_embeddings as S
-from tensorflow.python.keras.layers import Dot
-# import global_settings as G
-# from sentences_generator import Sentences
-# import vocab_generator as V_gen
-# import save_embeddings as S
+#from word2vec.keras import global_settings as G
+#from word2vec.keras.sentences_generator import Sentences
+#from word2vec.keras import vocab_generator as V_gen
+#from word2vec.keras import save_embeddings as S
+#from tensorflow.python.keras.layers import Dot
+import global_settings as G
+from sentences_generator import Sentences
+import vocab_generator as V_gen
+import save_embeddings as S
 
 k = G.window_size # context windows size
 context_size = 2*k
 
 # Creating a sentence generator from demo file
-sentences = Sentences("test_file.txt")
+sentences = Sentences("../newText2LimitSize")
 
 vocabulary = dict()
 V_gen.build_vocabulary(vocabulary, sentences)

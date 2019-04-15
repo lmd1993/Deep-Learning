@@ -1,6 +1,7 @@
 import codecs
 import pickle
-from word2vec.keras import global_settings as G
+#from word2vec.keras import global_settings as G
+import global_settings as G
 
 def write_array_to_file(wf, array):
 	for i in range(len(array)):

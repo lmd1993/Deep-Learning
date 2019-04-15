@@ -15,7 +15,8 @@ import numpy as np
 
 # local imports
 # Global settings for the project
-from word2vec.keras import global_settings as G
+#from word2vec.keras import global_settings as G
+import global_settings as G
 
 # vocabulary will be a dictionary of words and their corresponding counts
 def build_vocabulary(vocabulary, sentences):
