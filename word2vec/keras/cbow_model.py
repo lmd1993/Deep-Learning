@@ -10,11 +10,12 @@ from tensorflow.python.keras.layers import Input, Lambda, Dense
 from tensorflow.python.keras.layers.embeddings import Embedding
 from tensorflow.python.keras.optimizers import SGD
 #from tensorflow.python.keras.objectives import mse
+from tensorflow.python.keras.layers import Dot
+
 #from word2vec.keras import global_settings as G
 #from word2vec.keras.sentences_generator import Sentences
 #from word2vec.keras import vocab_generator as V_gen
 #from word2vec.keras import save_embeddings as S
-#from tensorflow.python.keras.layers import Dot
 import global_settings as G
 from sentences_generator import Sentences
 import vocab_generator as V_gen
@@ -63,15 +64,19 @@ model = Model(inputs=[word_index, context, negative_samples], outputs=[word_cont
 # binary crossentropy is applied on the output
 model.compile(optimizer='rmsprop', loss='binary_crossentropy')
 print (model.summary())
-plot_model(model, to_file='model.png')
+#plot_model(model, to_file='model.png')
 print(V_gen.getStepsPerEpoch(sentences, batchSize=1))
+eps = int(sys.argv[1])
+bS = int(sys.argv[2])
 # model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary), samples_per_epoch=G.train_words, nb_epoch=1)
-model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary),epochs=15, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=1))
+model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary),epochs=eps, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=bS))
 # Save the trained embedding
-S.save_embeddings("embedding.txt", shared_embedding_layer.get_weights()[0], vocabulary)
-S.save_embeddings("embedding2.txt", shared_embedding_layer2.get_weights()[0], vocabulary)
-S.save_embeddings_binary("embeddingb", shared_embedding_layer.get_weights()[0], vocabulary)
-S.save_embeddings_binary("embeddingb2", shared_embedding_layer2.get_weights()[0], vocabulary)
+emb1 = sys.argv[3]
+emb2 = sys.argv[4]
+S.save_embeddings("emb/"+emb1, shared_embedding_layer.get_weights()[0], vocabulary)
+S.save_embeddings("emb/"+emb2, shared_embedding_layer2.get_weights()[0], vocabulary)
+#S.save_embeddings_binary("embeddingb", shared_embedding_layer.get_weights()[0], vocabulary)
+#S.save_embeddings_binary("embeddingb2", shared_embedding_layer2.get_weights()[0], vocabulary)
 # S.save_embeddings("embedding.txt", shared_embedding_layer.get_weights()[1], vocabulary)
 
 # input_context = np.random.randint(10, size=(1, context_size))

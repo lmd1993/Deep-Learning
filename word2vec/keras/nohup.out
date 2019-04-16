@@ -1,0 +1,21 @@
+Generating Vocabulary from the sentences
+Vocabulary size = 10000
+Total words to be trained = 75540
+Deleting the words which occur less than 5 times
+Vocabulary size after filtering words = 2106
+2019-04-14 21:30:21.800934: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+2019-04-14 21:30:24.056730: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla K40c major: 3 minor: 5 memoryClockRate(GHz): 0.745
+pciBusID: 0000:04:00.0
+totalMemory: 11.17GiB freeMemory: 11.09GiB
+2019-04-14 21:30:24.056763: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-04-14 21:30:24.281857: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-04-14 21:30:24.281893: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-04-14 21:30:24.281900: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-04-14 21:30:24.282126: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10749 MB memory) -> physical GPU (device: 0, name: Tesla K40c, pci bus id: 0000:04:00.0, compute capability: 3.5)
+<class 'tensorflow.python.framework.ops.Tensor'>
+<class 'tensorflow.python.framework.ops.Tensor'>
+Traceback (most recent call last):
+  File "cbow_model.py", line 56, in <module>
+    word_context_product = Dot(axes=-1)([word_embedding, cbow])
+NameError: name 'Dot' is not defined
