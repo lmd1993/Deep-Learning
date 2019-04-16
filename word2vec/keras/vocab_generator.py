@@ -70,7 +70,7 @@ def generate_inverse_vocabulary_lookup(vocabulary, save_filepath):
 
 def subsample_sentence(sentence, vocabulary):
 	subsampled_sentence = list()
-	# replace words with unknown word is not found in vocabulary
+	#Mingda: replace words with unknown word is not found in vocabulary
 	sentence = [word if word in vocabulary else G.UNKNOWN_WORD for word in sentence]
 	if G.sample <= 0:
 		# If sampling is set to zero then don't do the sampling
@@ -113,6 +113,7 @@ def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 			sentence = sentence.split()
 			# Now we have to perform subsampling of the sentence to remove frequent words
 			# This will improve the speed
+			# subsample_sentence: replace words to unknown words
 			sentence = subsample_sentence(sentence, vocabulary)
 			if len(sentence) < G.MIN_SENTENCE_LENGTH:
 				continue

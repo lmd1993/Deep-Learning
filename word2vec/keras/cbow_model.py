@@ -66,7 +66,7 @@ print (model.summary())
 plot_model(model, to_file='model.png')
 print(V_gen.getStepsPerEpoch(sentences, batchSize=1))
 # model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary), samples_per_epoch=G.train_words, nb_epoch=1)
-model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary),epochs=15, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=1))
+model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary),epochs=1, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=1))
 # Save the trained embedding
 S.save_embeddings("embedding.txt", shared_embedding_layer.get_weights()[0], vocabulary)
 S.save_embeddings("embedding2.txt", shared_embedding_layer2.get_weights()[0], vocabulary)
