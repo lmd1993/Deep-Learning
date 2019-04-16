@@ -5,6 +5,7 @@ binFN = sys.argv[1] #embedding file
 embedding = binFN
 outputName = sys.argv[2] #output file
 vocab = sys.argv[3] # vocab file
+embedding2 = sys.argv[4] # second embedding file
 # for window size 1. Each two words a, b, to get the #(a, b)/#(a)
 contextDict = {}  # context word occurance #(a)
 context_Word_Dict = {}  # key: context word; value: Dict {word: #}, #(a with different b)
@@ -21,6 +22,7 @@ with open(embedding, "r") as input:
             break
 s = (wordCount, sizeDimension)
 emb = np.zeros(s, dtype=float)
+emb2 = np.zeros(s, dtype=float)
 voc = {}
 lineNum = 0
 with open(embedding, "r") as input:
@@ -38,6 +40,26 @@ with open(embedding, "r") as input:
             ind = 0
             for i in embLine.split(" "):
                 emb[lineNum - 1][ind] = float(i)
+                ind += 1
+        lineNum += 1
+lineNum = 0
+with open(embedding2, "r") as input:
+    for line in input:
+        if lineNum == 0:
+            lineNum += 1
+            continue
+        else:
+            line = line.rstrip()
+            word = line.split("\t")[0]
+            if word in voc:
+                print("error")
+            if voc[word] != lineNum -1:
+                print("mismatch of the two embeddings' position")
+            # voc[word] = lineNum-1
+            embLine = line.split("\t")[1]
+            ind = 0
+            for i in embLine.split(" "):
+                emb2[lineNum - 1][ind] = float(i)
                 ind += 1
         lineNum += 1
 """ideal stats"""
@@ -95,8 +117,8 @@ def sigmoid(xS):
 
 """compare ideal with real"""
 
-def vectorSig(key, key2, emb):
-    return sigmoid(emb[voc[key]].dot(emb[voc[key2]]))
+def vectorSig(key, key2, emb, emb2):
+    return sigmoid(emb[voc[key]].dot(emb2[voc[key2]]))
 
 
 res = []
@@ -105,7 +127,7 @@ for key, value in contextDict.items():
         #        print(key)
         #        print(key2)
         ideal = 0
-        act = vectorSig(key, key2, emb)
+        act = vectorSig(key, key2, emb, emb2)
         ideal = value2 / float(value)
         #	if value2/float(value) > 0.5:
         #		ideal = 1.0
