@@ -32,8 +32,8 @@ V_gen.filter_vocabulary_based_on(vocabulary, G.min_count)
 reverse_vocabulary = V_gen.generate_inverse_vocabulary_lookup(vocabulary, "vocab.txt")
 
 # generate embedding matrix with all values between -1/2d, 1/2d
-embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size+3, G.embedding_dimension))
-
+# embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size+1, G.embedding_dimension))
+embedding = np.zeros((G.vocab_size+3, G.embedding_dimension))
 # Creating CBOW model
 # Model has 3 inputs
 # Current word index, context words indexes and negative sampled word indexes
@@ -58,6 +58,12 @@ print(K.shape(word_embedding))
 print(K.shape(word_context_product))
 print(K.shape(cbow))
 negative_context_product = Dot(axes=-1)([negative_words_embedding, cbow])
+boost = 3
+import sys
+if len(sys.argv)>5:
+    boost = float(sys.argv[5])
+if boost > 1:
+    negative_context_product = Lambda(lambda x: x * boost)(negative_context_product)
 # The dot products are outputted
 model = Model(inputs=[word_index, context, negative_samples], outputs=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output

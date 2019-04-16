@@ -51,8 +51,8 @@ with open(embedding2, "r") as input:
         else:
             line = line.rstrip()
             word = line.split("\t")[0]
-            if word in voc:
-                print("error")
+            # if word in voc:
+            #     print("error")
             if voc[word] != lineNum -1:
                 print("mismatch of the two embeddings' position")
             # voc[word] = lineNum-1
@@ -137,6 +137,7 @@ for key, value in contextDict.items():
         #        input("Press Enter to continue...")
         # ideal = value2/value
         res.append(abs(act - ideal))
+print(np.mean(res))
 with open(outputName, 'w') as f:
     for item in res:
         f.write("%s\n" % item)
