@@ -4,6 +4,8 @@ from tensorflow.python.keras import backend as K
 from tensorflow.python.keras.utils import plot_model
 
 import numpy as np
+import tensorflow as tf
+import sys
 #from tensorflow.python.keras.utils.np_utils import accuracy
 from tensorflow.python.keras.models import Sequential, Model
 from tensorflow.python.keras.layers import Input, Lambda, Dense
@@ -33,7 +35,16 @@ V_gen.filter_vocabulary_based_on(vocabulary, G.min_count)
 reverse_vocabulary = V_gen.generate_inverse_vocabulary_lookup(vocabulary, "vocab.txt")
 
 # generate embedding matrix with all values between -1/2d, 1/2d
-embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size+3, G.embedding_dimension))
+#embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size+3, G.embedding_dimension))
+import os
+embedding = np.ndarray
+aFile = "initialShare.npy"
+if os.path.isfile(aFile):
+    embedding = np.load(aFile)
+else:
+    embedding = np.random.uniform(-1.0/2.0, 1.0/2.0, (G.vocab_size+3, G.embedding_dimension))
+    np.save(aFile, embedding)
+embeddingTwo = np.zeros((G.vocab_size+3, G.embedding_dimension))
 
 # Creating CBOW model
 # Model has 3 inputs
@@ -43,22 +54,34 @@ context = Input(shape=(context_size,), name="context")
 negative_samples = Input(shape=(G.negative,), name="negative")
 # All the inputs are processed through a common embedding layer
 shared_embedding_layer = Embedding(input_dim=(G.vocab_size+3), output_dim=G.embedding_dimension, weights=[embedding])
-shared_embedding_layer2 = Embedding(input_dim=(G.vocab_size+3), output_dim=G.embedding_dimension, weights=[embedding])
+shared_embedding_layer2 = Embedding(input_dim=(G.vocab_size+3), output_dim=G.embedding_dimension, weights=[embeddingTwo])
 
 word_embedding = shared_embedding_layer(word_index)
+word_embedding = Lambda(lambda x: x * 1)(word_embedding)
+	
 context_embeddings = shared_embedding_layer2(context)
 negative_words_embedding = shared_embedding_layer(negative_samples)
-
+negative_words_embedding = Lambda(lambda x: x * 1)(negative_words_embedding)
+	
 # Now the context words are averaged to get the CBOW vector
 cbow = Lambda(lambda x: K.mean(x, axis=1), output_shape=(G.embedding_dimension,))(context_embeddings)
 # The context is multiplied (dot product) with current word and negative sampled words
 print(type(word_embedding))
 print(type(cbow))
 word_context_product = Dot(axes=-1)([word_embedding, cbow])
+word_context_product = Lambda(lambda x: tf.math.sigmoid(x))(word_context_product)
+	
 print(K.shape(word_embedding))
 print(K.shape(word_context_product))
 print(K.shape(cbow))
 negative_context_product = Dot(axes=-1)([negative_words_embedding, cbow])
+boost = 1
+if len(sys.argv)>5:
+    boost = float(sys.argv[5])
+if boost > 1:
+    negative_context_product = Lambda(lambda x: x * boost)(negative_context_product)
+negative_context_product = Lambda(lambda x: tf.math.sigmoid(x))(negative_context_product)
+	
 # The dot products are outputted
 model = Model(inputs=[word_index, context, negative_samples], outputs=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output
