@@ -55,8 +55,8 @@ def generate_inverse_vocabulary_lookup(vocabulary, save_filepath):
 	reverse_vocabulary = dict()
 	# index 0 is reserved for padding
 	# UNKNOWN_WORD will have the index 1
-	reverse_vocabulary[G.UNKNOWN_WORD] = 1
-	index = 2
+	reverse_vocabulary[G.UNKNOWN_WORD] = 0
+	index = 1
 	with codecs.open(save_filepath, "w", "utf-8") as wf:
 		# first save the UNKNOWN_WORD
 		wf.write(G.UNKNOWN_WORD + "\t" + str(vocabulary[G.UNKNOWN_WORD]) + "\n")
@@ -86,7 +86,11 @@ def subsample_sentence(sentence, vocabulary):
 			subsampled_sentence.append(word)
 	# print "subsampled length = %d/%d" % (len(subsampled_sentence), len(sentence))
 	return subsampled_sentence
-
+def get_allNegative(current_word_index):
+		negative_samples = np.arange(G.vocab_size)
+		negative_samples = np.setdiff1d(negative_samples, current_word_index)
+		return np.array([negative_samples])
+	
 def get_negative_samples(current_word_index):
 	# Generate random negative samples
 	negative_samples = random.sample(range(G.vocab_size), G.negative)
@@ -137,13 +141,14 @@ def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 						else:
 							context_word_indexes.append(sent_seq[(i+j)]) 
 				# get negative samples
-				negative_samples = get_negative_samples(current_word_index)
-				context_word_indexes = np.array([context_word_indexes])
+#				negative_samples = get_negative_samples(current_word_index)
+                                negative_samples = get_allNegative(current_word_index)
+                                context_word_indexes = np.array([context_word_indexes])
 				# yield a batch here
 				# batch should be a tuple of inputs and targets
 				# print [current_word_index.shape, context_word_indexes.shape, negative_samples.shape], [np.array([1.0]).shape, np.zeros((1,G.negative)).shape]
 				# print [current_word_index, context_word_indexes, negative_samples], [np.array([1.0]), np.zeros((1,G.negative))]
-				yield [current_word_index, context_word_indexes, negative_samples], [np.array([1.0]), np.zeros((1,G.negative))]
+				yield [current_word_index, context_word_indexes, negative_samples], [np.array([1.0]), np.zeros((1,G.vocab_size-1)))]
 
 def sentences_to_index_sequences(sentences, vocabulary, save_vocab_filepath, save_index_filepath):
 	# generate inverse vocabulary lookup
