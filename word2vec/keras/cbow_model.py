@@ -24,7 +24,7 @@ import vocab_generator as V_gen
 import save_embeddings as S
 
 k = G.window_size # context windows size
-context_size = 2*k
+context_size = k
 
 # Creating a sentence generator from demo file
 sentences = Sentences("../newText2LimitSize")
@@ -75,7 +75,7 @@ print(K.shape(word_embedding))
 print(K.shape(word_context_product))
 print(K.shape(cbow))
 negative_context_product = Dot(axes=-1)([negative_words_embedding, cbow])
-boost = 1
+boost = 3
 if len(sys.argv)>5:
     boost = float(sys.argv[5])
 if boost > 1:

@@ -124,7 +124,7 @@ def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 			for i in range(sentence_length):
 				current_word_index = None
 				context_word_indexes = list()
-				for j in range(-G.window_size, G.window_size + 1):
+				for j in range(-G.window_size, G.window_size):
 					# j will be of indices -G.window_size to G.window_size
 					if j == 0:
 						# current word
