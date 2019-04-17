@@ -19,7 +19,7 @@ def save_embeddings(save_filepath, weights, vocabulary):
 		wf.write(str(len(vocabulary)) + " " + str(weights.shape[1]) + "\n")
 		# Now each line is word "\t" and embedding
 		# First word is UNKNOWN_WORD by our convention
-		index = 1
+		index = 0
 		wf.write(G.UNKNOWN_WORD + "\t")
 		write_array_to_file(wf, weights[index])
 		index += 1
@@ -38,7 +38,7 @@ def save_embeddings_binary(save_filepath, weights, vocabulary):
 		# wf.write(bytes(chr(str(len(vocabulary)) + " " + str(weights.shape[1]) + "\n")))
 		# Now each line is word "\t" and embedding
 		# First word is UNKNOWN_WORD by our convention
-		index = 1
+		index = 0
 		# wf.write(bytes(chr(G.UNKNOWN_WORD + "\t")))
 		pickle.dump((G.UNKNOWN_WORD + "\t"), wf)
 		write_array_to_file_binary(wf, weights[index])
