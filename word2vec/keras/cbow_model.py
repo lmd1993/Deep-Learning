@@ -24,7 +24,7 @@ import vocab_generator as V_gen
 import save_embeddings as S
 
 k = G.window_size # context windows size
-context_size = 2*k
+context_size = k
 
 # Creating a sentence generator from demo file
 sentences = Sentences("../newText2LimitSize")

@@ -3,7 +3,7 @@ UNKNOWN_WORD = "<unk>"
 
 embedding_dimension = 100
 min_count = 5
-window_size = 3
+window_size = 1
 sample = 1e-3
 negative = 5
 vocab_size = None
