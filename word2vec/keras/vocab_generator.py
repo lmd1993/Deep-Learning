@@ -55,8 +55,8 @@ def generate_inverse_vocabulary_lookup(vocabulary, save_filepath):
 	reverse_vocabulary = dict()
 	# index 0 is reserved for padding
 	# UNKNOWN_WORD will have the index 1
-	reverse_vocabulary[G.UNKNOWN_WORD] = 1
-	index = 2
+	reverse_vocabulary[G.UNKNOWN_WORD] = 0
+	index = 1
 	with codecs.open(save_filepath, "w", "utf-8") as wf:
 		# first save the UNKNOWN_WORD
 		wf.write(G.UNKNOWN_WORD + "\t" + str(vocabulary[G.UNKNOWN_WORD]) + "\n")

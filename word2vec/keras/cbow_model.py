@@ -35,16 +35,16 @@ V_gen.filter_vocabulary_based_on(vocabulary, G.min_count)
 reverse_vocabulary = V_gen.generate_inverse_vocabulary_lookup(vocabulary, "vocab.txt")
 
 # generate embedding matrix with all values between -1/2d, 1/2d
-#embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size+3, G.embedding_dimension))
+#embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size, G.embedding_dimension))
 import os
 embedding = np.ndarray
 aFile = "initialShare.npy"
 if os.path.isfile(aFile):
     embedding = np.load(aFile)
 else:
-    embedding = np.random.uniform(-1.0/2.0, 1.0/2.0, (G.vocab_size+3, G.embedding_dimension))
+    embedding = np.random.uniform(-1.0/2.0, 1.0/2.0, (G.vocab_size, G.embedding_dimension))
     np.save(aFile, embedding)
-embeddingTwo = np.zeros((G.vocab_size+3, G.embedding_dimension))
+embeddingTwo = np.zeros((G.vocab_size, G.embedding_dimension))
 
 # Creating CBOW model
 # Model has 3 inputs
@@ -53,8 +53,8 @@ word_index = Input(shape=(1,), name="word")
 context = Input(shape=(context_size,), name="context")
 negative_samples = Input(shape=(G.negative,), name="negative")
 # All the inputs are processed through a common embedding layer
-shared_embedding_layer = Embedding(input_dim=(G.vocab_size+3), output_dim=G.embedding_dimension, weights=[embedding])
-shared_embedding_layer2 = Embedding(input_dim=(G.vocab_size+3), output_dim=G.embedding_dimension, weights=[embeddingTwo])
+shared_embedding_layer = Embedding(input_dim=(G.vocab_size), output_dim=G.embedding_dimension, weights=[embedding])
+shared_embedding_layer2 = Embedding(input_dim=(G.vocab_size), output_dim=G.embedding_dimension, weights=[embeddingTwo])
 
 word_embedding = shared_embedding_layer(word_index)
 word_embedding = Lambda(lambda x: x * 1)(word_embedding)
