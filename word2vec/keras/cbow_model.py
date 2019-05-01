@@ -85,7 +85,12 @@ negative_context_product = Lambda(lambda x: tf.math.sigmoid(x))(negative_context
 # The dot products are outputted
 model = Model(inputs=[word_index, context, negative_samples], outputs=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output
-model.compile(optimizer='rmsprop', loss='binary_crossentropy')
+# Log Norm
+# model.compile(optimizer='rmsprop', loss='binary_crossentropy')
+# L2 Norm
+# model.compile(optimizer='rmsprop', loss='mean_squared_error')
+# L1 Norm
+model.compile(optimizer='rmsprop', loss='mean_absolute_error')
 print (model.summary())
 #plot_model(model, to_file='model.png')
 print(V_gen.getStepsPerEpoch(sentences, batchSize=1))
