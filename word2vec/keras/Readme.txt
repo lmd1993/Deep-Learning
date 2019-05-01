@@ -1,3 +1,5 @@
+Mainly two branch used: noNegative and context1
+
 If you want to use L2 Norm, you need to edit the:
 model.compile(optimizer='rmsprop', loss='mean_squared_error')
 If you want to use Log Norm, you need:
