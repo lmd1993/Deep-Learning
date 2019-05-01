@@ -87,7 +87,11 @@ model = Model(inputs=[word_index, context, negative_samples], outputs=[word_cont
 # binary crossentropy is applied on the output
 # model.compile(optimizer='rmsprop', loss='binary_crossentropy')
 # L2 Norm
-model.compile(optimizer='rmsprop', loss='mean_squared_error')
+# model.compile(optimizer='rmsprop', loss='mean_squared_error')
+
+# L1 Norm
+model.compile(optimizer='rmsprop', loss='binary_crossentropy')
+
 print (model.summary())
 #plot_model(model, to_file='model.png')
 print(V_gen.getStepsPerEpoch(sentences, batchSize=1))
