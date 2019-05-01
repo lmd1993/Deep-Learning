@@ -75,7 +75,7 @@ print(K.shape(word_embedding))
 print(K.shape(word_context_product))
 print(K.shape(cbow))
 negative_context_product = Dot(axes=-1)([negative_words_embedding, cbow])
-boost = 3
+boost = 1 
 if len(sys.argv)>5:
     boost = float(sys.argv[5])
 if boost > 1:
