@@ -1,3 +1,4 @@
+# This can be used for both L2 and Log Norm.
 import sys
 import numpy as np
 UNKNOWN_WORD = "<unk>"
