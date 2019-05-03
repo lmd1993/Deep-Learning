@@ -7,6 +7,7 @@ outputName = sys.argv[2] #output file
 vocab = sys.argv[3] # vocab file
 embedding2 = sys.argv[4] # second embedding file
 # for window size 1. Each two words a, b, to get the #(a, b)/#(a)
+shuffleFile = sys.argv[5]
 contextDict = {}  # context word occurance #(a)
 context_Word_Dict = {}  # key: context word; value: Dict {word: #}, #(a with different b)
 dictWords = {}
@@ -138,6 +139,10 @@ for key, value in contextDict.items():
         # ideal = value2/value
         res.append(abs(act - ideal))
 print(np.mean(res))
+hs = open(shuffleFile,"a")
+hs.write("%f \n" % np.mean(res))
+hs.close()
+
 with open(outputName, 'w') as f:
     for item in res:
         f.write("%s\n" % item)

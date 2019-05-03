@@ -94,14 +94,13 @@ def get_negative_samples(current_word_index):
 		negative_samples = random.sample(range(G.vocab_size), G.negative)
 	return np.array([negative_samples])
 def get_negative_samples(current_word_index, sampleTable):
-	# Generate random negative samples from sampleTable
+	# Generate random negative samples
 	negative_samples =np.random.choice(
             sampleTable, size=G.negative).tolist()
 	while current_word_index in negative_samples:
 		negative_samples = np.random.choice(
 			sampleTable, size=G.negative).tolist()
-        print("random")
-        return np.array([negative_samples])
+	return np.array([negative_samples])
 def getStepsPerEpoch(sentences, batchSize = 1):
 	count = 0
 	for sentence in sentences:

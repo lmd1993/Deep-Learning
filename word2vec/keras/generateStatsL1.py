@@ -6,6 +6,8 @@ embedding = binFN
 outputName = sys.argv[2] #output file
 vocab = sys.argv[3] # vocab file
 embedding2 = sys.argv[4] # second embedding file
+shuffleFile = sys.argv[5]
+
 # for window size 1. Each two words a, b, to get the #(a, b)/#(a)
 contextDict = {}  # context word occurance #(a)
 context_Word_Dict = {}  # key: context word; value: Dict {word: #}, #(a with different b)
@@ -130,10 +132,10 @@ for key, value in contextDict.items():
         act = vectorSig(key, key2, emb, emb2)
         # ideal = value2 / float(value)
         ################################## Design L1
-        if value2/float(value) >= 0.5:
+        if value2/float(value) > 0.5:
             ideal = 1.0
-        #elif value2/float(value) == 0.5:
-         #   continue
+        elif value2/float(value) == 0.5:
+            continue
         else:
             ideal = 0.0
         #  print("actual%d and ideal%d"%(act, ideal))
@@ -141,6 +143,9 @@ for key, value in contextDict.items():
         # ideal = value2/value
         res.append(abs(act - ideal))
 print(np.mean(res))
+hs = open(shuffleFile,"a")
+hs.write("%f \n" % np.mean(res))
+hs.close()
 with open(outputName, 'w') as f:
     for item in res:
         f.write("%s\n" % item)

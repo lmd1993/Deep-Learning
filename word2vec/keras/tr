@@ -1,0 +1,6 @@
+#!/bin/bash
+for i in 1 3 5 7 10
+do	
+	loss="L1"
+	echo "emb/embNeg5${loss}Epoch$iBoost3"
+done

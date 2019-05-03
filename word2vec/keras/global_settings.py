@@ -5,7 +5,7 @@ embedding_dimension = 100
 min_count = 5
 window_size = 1
 sample = 0
-negative = 3
+negative = 5
 vocab_size = None
 train_words = None
 

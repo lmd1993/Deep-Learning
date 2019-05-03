@@ -96,20 +96,28 @@ negative_context_product = Lambda(lambda x: tf.math.sigmoid(x), name= "sigmoid")
 # The dot products are outputted
 boost = 1
 import sys
-if len(sys.argv)>5:
-    boost = float(sys.argv[5])
+
+if len(sys.argv)>6:
+    boost = float(sys.argv[6])
 if boost > 1:
     negative_context_product = Lambda(lambda x: x * boost, name="boost")(negative_context_product)
-
+    #negative_context_product = Lambda(lambda x: tf.math.minimum(x * boost, 1), name="boost")(negative_context_product)
+labelNorm = sys.argv[5]
 # The dot products are outputted
 model = Model(inputs=[word_index, context, negative_samples], outputs=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output
 # Log Norm
-model.compile(optimizer='rmsprop', loss='binary_crossentropy')
+if labelNorm == "log":
+    print("USE LOG")
+    model.compile(optimizer='rmsprop', loss='binary_crossentropy')
 # L2 Norm
-# model.compile(optimizer='rmsprop', loss='mean_squared_error')
+if labelNorm == "L2":
+    print ("USE L2")
+    model.compile(optimizer='rmsprop', loss='mean_squared_error')
 # L1 Norm
-# model.compile(optimizer='rmsprop', loss='mean_absolute_error')
+if labelNorm == "L1":
+    print("USE L1")
+    model.compile(optimizer='rmsprop', loss='mean_absolute_error')
 print (model.summary())
 #plot_model(model, to_file='model.png')
 print(V_gen.getStepsPerEpoch(sentences, batchSize=1))
