@@ -130,10 +130,10 @@ for key, value in contextDict.items():
         act = vectorSig(key, key2, emb, emb2)
         # ideal = value2 / float(value)
         ################################## Design L1
-        if value2/float(value) > 0.5:
+        if value2/float(value) >= 0.5:
             ideal = 1.0
-        elif value2/float(value) == 0.5:
-            continue
+        #elif value2/float(value) == 0.5:
+         #   continue
         else:
             ideal = 0.0
         #  print("actual%d and ideal%d"%(act, ideal))
