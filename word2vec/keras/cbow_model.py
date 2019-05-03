@@ -34,6 +34,23 @@ V_gen.build_vocabulary(vocabulary, sentences)
 V_gen.filter_vocabulary_based_on(vocabulary, G.min_count)
 reverse_vocabulary = V_gen.generate_inverse_vocabulary_lookup(vocabulary, "vocab.txt")
 
+# Mingda: Generate Sample table
+def init_sample_table(reverse_vocabulary, vocabulary):
+    sample_table = []
+    sample_table_size = 1e8
+    pow_frequency = np.array(list(vocabulary.values()))**0.75
+    words_pow = sum(pow_frequency)
+    ratio = pow_frequency / words_pow
+    count = np.round(ratio * sample_table_size)
+    vocabKey = list(vocabulary.keys())
+    for wid, c in enumerate(count):
+        currentKey = reverse_vocabulary[vocabKey[wid]]
+        sample_table += [currentKey] * int(c)
+    sample_table = np.array(sample_table)
+    return sample_table
+sampleTable = init_sample_table(reverse_vocabulary, vocabulary)
+
+
 # generate embedding matrix with all values between -1/2d, 1/2d
 #embedding = np.random.uniform(-1.0/2.0/G.embedding_dimension, 1.0/2.0/G.embedding_dimension, (G.vocab_size, G.embedding_dimension))
 import os
@@ -99,7 +116,8 @@ print(V_gen.getStepsPerEpoch(sentences, batchSize=1))
 eps = int(sys.argv[1])
 bS = int(sys.argv[2])
 # model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary), samples_per_epoch=G.train_words, nb_epoch=1)
-model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary),epochs=eps, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=bS))
+model.fit_generator(V_gen.pretraining_batch_generator_withSample(sentences, vocabulary, reverse_vocabulary, sampleTable),epochs=eps, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=bS))
+# model.fit_generator(V_gen.pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary),epochs=eps, steps_per_epoch=V_gen.getStepsPerEpoch(sentences, batchSize=bS))
 # Save the trained embedding
 emb1 = sys.argv[3]
 emb2 = sys.argv[4]

@@ -93,22 +93,58 @@ def get_negative_samples(current_word_index):
 	while current_word_index in negative_samples:
 		negative_samples = random.sample(range(G.vocab_size), G.negative)
 	return np.array([negative_samples])
+def get_negative_samples(current_word_index, sampleTable):
+	# Generate random negative samples from sampleTable
+	negative_samples =np.random.choice(
+            sampleTable, size=G.negative).tolist()
+	while current_word_index in negative_samples:
+		negative_samples = np.random.choice(
+			sampleTable, size=G.negative).tolist()
+        print("random")
+        return np.array([negative_samples])
 def getStepsPerEpoch(sentences, batchSize = 1):
 	count = 0
 	for sentence in sentences:
 		sentence = sentence.split()
 		count += len(sentence)
 	return int(count/batchSize)
+def pretraining_batch_generator_withSample(sentences, vocabulary, reverse_vocabulary, sampleTable):
+        # Restart running from the first sentence if the the file reading is done
+        while True:
+                for sentence in sentences:
+                        # split the sentence on whitespace
+                        sentence = sentence.split()
+                        # Now we have to perform subsampling of the sentence to remove frequent words
+                        # This will improve the speed
+                        sentence = subsample_sentence(sentence, vocabulary)
+                        if len(sentence) < G.MIN_SENTENCE_LENGTH:
+                                continue
+                        sent_seq = [reverse_vocabulary[word] for word in sentence]
+
+                        # Create current batch
+                        sentence_length = len(sent_seq)
+                        for i in range(sentence_length):
+                                current_word_index = None
+                                context_word_indexes = list()
+                                for j in range(-G.window_size, G.window_size):
+                                        # j will be of indices -G.window_size to G.window_size
+                                        if j == 0:
+                                                # current word
+                                                current_word_index = np.array([sent_seq[i]])
+                                        else:
+                                                # context word
+                                                if (i+j) < 0 or (i+j) >= sentence_length:
+                                                        # pad with zeros
+                                                        context_word_indexes.append(0)
+                                                else:
+                                                        context_word_indexes.append(sent_seq[(i+j)])
+                                # get negative samples
+                                negative_samples = get_negative_samples(current_word_index, sampleTable)
+                                context_word_indexes = np.array([context_word_indexes])
+                                yield [current_word_index, context_word_indexes, negative_samples], [np.array([1.0]), np.zeros((1,G.negative))]
 def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 	# Restart running from the first sentence if the the file reading is done
 	while True:
-		# Read one sentence from the file into memory
-		# For each sentence generate word index sequence
-		# Now spit out batches for training
-		# Each batch will emit the following things
-		# 1 - current word index
-		# 2 - context word indexes
-		# 3 - negative sampled word indexes
 		for sentence in sentences:
 			# split the sentence on whitespace
 			sentence = sentence.split()
@@ -139,10 +175,6 @@ def pretraining_batch_generator(sentences, vocabulary, reverse_vocabulary):
 				# get negative samples
 				negative_samples = get_negative_samples(current_word_index)
 				context_word_indexes = np.array([context_word_indexes])
-				# yield a batch here
-				# batch should be a tuple of inputs and targets
-				# print [current_word_index.shape, context_word_indexes.shape, negative_samples.shape], [np.array([1.0]).shape, np.zeros((1,G.negative)).shape]
-				# print [current_word_index, context_word_indexes, negative_samples], [np.array([1.0]), np.zeros((1,G.negative))]
 				yield [current_word_index, context_word_indexes, negative_samples], [np.array([1.0]), np.zeros((1,G.negative))]
 
 def sentences_to_index_sequences(sentences, vocabulary, save_vocab_filepath, save_index_filepath):
