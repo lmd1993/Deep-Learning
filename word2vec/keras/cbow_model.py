@@ -88,9 +88,9 @@ if boost > 1:
 model = Model(inputs=[word_index, context, negative_samples], outputs=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output
 # Log Norm
-# model.compile(optimizer='rmsprop', loss='binary_crossentropy')
+model.compile(optimizer='rmsprop', loss='binary_crossentropy')
 # L2 Norm
-model.compile(optimizer='rmsprop', loss='mean_squared_error')
+# model.compile(optimizer='rmsprop', loss='mean_squared_error')
 # L1 Norm
 # model.compile(optimizer='rmsprop', loss='mean_absolute_error')
 print (model.summary())
