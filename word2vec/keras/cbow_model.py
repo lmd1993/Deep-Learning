@@ -75,13 +75,15 @@ print(K.shape(word_embedding))
 print(K.shape(word_context_product))
 print(K.shape(cbow))
 negative_context_product = Dot(axes=-1)([negative_words_embedding, cbow])
+
+negative_context_product = Lambda(lambda x: tf.math.sigmoid(x), name= "sigmoid")(negative_context_product)
+# The dot products are outputted
 boost = 1
+import sys
 if len(sys.argv)>5:
     boost = float(sys.argv[5])
 if boost > 1:
-    negative_context_product = Lambda(lambda x: x * boost)(negative_context_product)
-negative_context_product = Lambda(lambda x: tf.math.sigmoid(x))(negative_context_product)
-	
+    negative_context_product = Lambda(lambda x: x * boost, name="boost")(negative_context_product)
 # The dot products are outputted
 model = Model(inputs=[word_index, context, negative_samples], outputs=[word_context_product, negative_context_product])
 # binary crossentropy is applied on the output
